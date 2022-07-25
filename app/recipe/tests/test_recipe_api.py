@@ -112,7 +112,7 @@ class PrivateRecipeAPITests(TestCase):
         payload = {
             "title": "Sample recipe",
             "time_minutes": 30,
-            "price": Decimal("5,99"),
+            "price": Decimal('5.99'),
         }
         res = self.client.post(RECIPES_URL, payload)
 
@@ -136,6 +136,7 @@ class PrivateRecipeAPITests(TestCase):
         res = self.client.patch(url, payload)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+        recipe.refresh_from_db()
         self.assertEqual(recipe.title, payload["title"])
         self.assertEqual(recipe.link, original_link)
         self.assertEqual(recipe.user, self.user)
