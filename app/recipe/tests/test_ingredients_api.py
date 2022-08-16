@@ -1,6 +1,7 @@
 """
 Tests for the ingredients API.
 """
+from decimal import Decimal
 from unittest import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -9,16 +10,17 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Ingredient
+from core.models import Ingredient, Recipe
 
 from recipe.serializers import IngredientSerializer
+
 
 INGREDIENTS_URL = reverse('recipe:ingredient-list')
 
 
-def detail_url(ingridient_id):
+def detail_url(ingredient_id):
     """Create and return an ingredient detail URL"""
-    return reverse('recipe:ingredient-detail', args=[ingridient_id])
+    return reverse('recipe:ingredient-detail', args=[ingredient_id])
 
 
 def create_user(email='user@example.com', password='testpass123'):
@@ -95,3 +97,25 @@ class PrivateIngredientsApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         ingredient = Ingredient.objects.filter(user=self.user)
         self.assertFalse(ingredient.exists())
+
+    # def test_create_recipe_with_new_ingredients(self):
+    #     """Test creating a recipe with new ingredients."""
+    #     payload = {
+    #         'title': 'Cauliflower Tacos',
+    #         'time_minutes': 60,
+    #         'price': Decimal('4.30'),
+    #         'ingredients': [{'name': 'Cauliflower'}, {'name': 'Salt'}],
+    #     }
+    #     res = self.client.post(RECIPES_URL, payload, format='json')
+    #
+    #     self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+    #     recipes = Recipe.objects.filter(user=self.user)
+    #     self.assertEqual(recipes.count(),1)
+    #     recipe = recipes[0]
+    #     self.assertEqual(recipe.ingredients.count(),2)
+    #     for ingredient in payload['ingredients']:
+    #         exists = recipe.ingredients.filter(
+    #             name=ingredient['name'],
+    #             user=self.user,
+    #         ).exists()
+    #         self.assertTrue(exists)
